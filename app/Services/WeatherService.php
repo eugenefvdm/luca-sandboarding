@@ -12,7 +12,7 @@ class WeatherService
 
     public function __construct()
     {
-        $this->apiKey = '2cff4a3e03a38fd165a274c0bcf8c22a';
+        $this->apiKey = config('services.openweathermap.api_key');
     }
 
     public function getCurrentWeather(string $city): ?array
