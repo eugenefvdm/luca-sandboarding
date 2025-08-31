@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -9,6 +10,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/api/weather/current', [WeatherController::class, 'current'])->name('weather.current');
+
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>Laravel</title>
 
@@ -98,9 +99,9 @@
                     </div>
                     <ul class="flex gap-3 text-sm leading-normal">
                         <li>
-                            <a href="https://cloud.laravel.com" target="_blank" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
+                            <button id="book-now-btn" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal cursor-pointer">
                                 Book now!
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -119,9 +120,69 @@
             <div class="h-14.5 hidden lg:block"></div>
         @endif
 
+        <!-- Booking Modal -->
+        <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+            <div class="bg-white dark:bg-[#161615] rounded-lg max-w-md w-full p-6 relative">
+                <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <h2 class="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC] mb-4">Book Your Sandboarding Adventure</h2>
+                
+                <form id="booking-form" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-1">What's your name?</label>
+                        <input type="text" id="name" name="name" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div id="name-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="contact_number" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-1">Contact number?</label>
+                        <input type="tel" id="contact_number" name="contact_number" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div id="contact_number-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="booking_date" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-1">When do you want to sandboard?</label>
+                        <input type="date" id="booking_date" name="booking_date" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div id="booking_date-error" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" id="cancel-booking" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submit-booking" class="flex-1 px-4 py-2 bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] rounded-md hover:bg-black dark:hover:bg-white">
+                            Book Now
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Success Message -->
+                <div id="booking-success" class="hidden">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC] mb-2">Booking Confirmed!</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">We'll contact you soon to confirm your sandboarding adventure.</p>
+                        <button id="close-success" class="px-4 py-2 bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] rounded-md hover:bg-black dark:hover:bg-white">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 fetchWeatherData();
+                initBookingModal();
             });
 
             async function fetchWeatherData() {
@@ -174,6 +235,115 @@
                 
                 // Show error message
                 document.getElementById('weather-error').classList.remove('hidden');
+            }
+
+            function initBookingModal() {
+                const bookNowBtn = document.getElementById('book-now-btn');
+                const bookingModal = document.getElementById('booking-modal');
+                const closeModalBtn = document.getElementById('close-modal');
+                const cancelBookingBtn = document.getElementById('cancel-booking');
+                const bookingForm = document.getElementById('booking-form');
+                const bookingSuccess = document.getElementById('booking-success');
+                const closeSuccessBtn = document.getElementById('close-success');
+                const submitBtn = document.getElementById('submit-booking');
+
+                // Set minimum date to tomorrow
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const minDate = tomorrow.toISOString().split('T')[0];
+                document.getElementById('booking_date').min = minDate;
+
+                // Open modal
+                bookNowBtn.addEventListener('click', function() {
+                    bookingModal.classList.remove('hidden');
+                    bookingModal.classList.add('flex');
+                });
+
+                // Close modal functions
+                function closeModal() {
+                    bookingModal.classList.add('hidden');
+                    bookingModal.classList.remove('flex');
+                    bookingForm.classList.remove('hidden');
+                    bookingSuccess.classList.add('hidden');
+                    bookingForm.reset();
+                    clearErrors();
+                }
+
+                closeModalBtn.addEventListener('click', closeModal);
+                cancelBookingBtn.addEventListener('click', closeModal);
+                closeSuccessBtn.addEventListener('click', closeModal);
+
+                // Close modal when clicking outside
+                bookingModal.addEventListener('click', function(e) {
+                    if (e.target === bookingModal) {
+                        closeModal();
+                    }
+                });
+
+                // Form submission
+                bookingForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Clear previous errors
+                    clearErrors();
+                    
+                    // Disable submit button
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Booking...';
+                    
+                    try {
+                        const formData = new FormData(bookingForm);
+                        const response = await fetch('/bookings', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                                               document.querySelector('input[name="_token"]').value,
+                                'Accept': 'application/json',
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Show success message
+                            bookingForm.classList.add('hidden');
+                            bookingSuccess.classList.remove('hidden');
+                        } else {
+                            // Show validation errors
+                            if (data.errors) {
+                                Object.keys(data.errors).forEach(field => {
+                                    showFieldError(field, data.errors[field][0]);
+                                });
+                            } else {
+                                alert(data.message || 'Something went wrong. Please try again.');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Booking error:', error);
+                        alert('Something went wrong. Please try again.');
+                    } finally {
+                        // Re-enable submit button
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Book Now';
+                    }
+                });
+
+                function clearErrors() {
+                    const errorElements = document.querySelectorAll('[id$="-error"]');
+                    errorElements.forEach(element => {
+                        element.classList.add('hidden');
+                        element.textContent = '';
+                    });
+                }
+
+                function showFieldError(fieldName, message) {
+                    const errorElement = document.getElementById(fieldName + '-error');
+                    if (errorElement) {
+                        errorElement.textContent = message;
+                        errorElement.classList.remove('hidden');
+                    }
+                }
             }
         </script>
     </body>

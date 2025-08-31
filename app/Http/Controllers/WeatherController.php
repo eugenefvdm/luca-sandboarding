@@ -13,7 +13,7 @@ class WeatherController extends Controller
 
     public function current(Request $request)
     {
-        $city = $request->get('city', 'Melkbosstrand');
+        $city = $request->get('city', 'Cape Town');
         
         $weatherData = $this->weatherService->getCurrentWeather($city);
         
